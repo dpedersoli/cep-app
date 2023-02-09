@@ -6,43 +6,24 @@ import { Footer } from './components/footer'
 import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 type TCep = {
-  cep?: number |& string,
-  logradouro?: string,
-  bairro?: string,
-  cidade?: string,
-  uf?: string
+  cep: any,
+  logradouro: string,
+  bairro: string,
+  cidade: string,
+  uf: string
 }
 
 function App() {
   const [cep, setCep] = useState('')
-  const [allCeps, setAllCeps] = useState<TCep[]>([])
+  const [allCeps, setAllCeps] = useState<TCep[]>([{
+    cep: "",
+    logradouro: "",
+    bairro: "",
+    cidade: "",
+    uf: ""
+  }])
 
-  const getCEP = useCallback((e: any) => {
-    e.preventDefault();
-
-    if (cep.toString().length < 8) {
-      return (console.log('Insira o CEP completo (8 dígitos)'))
-    } else if (isNaN(Number(cep)) || !cep) {
-      return (console.log('Insira somente números'))
-    }
-
-    api.get(cep + '/json')
-    .then((response) => {
-      setAllCeps(response.data)
-      setCep('')
-      
-      console.log(allCeps)
-      })
-      .catch((error) => {
-        // setError(error.message);
-      })
-      // .finally(() => {
-      //   setAllCeps()
-      // });
-    },[cep]
-  );
-
-  // const getCEP = ((e: any) => {
+  // const getCEP = useCallback((e: any) => {
   //   e.preventDefault();
 
   //   if (cep.toString().length < 8) {
@@ -61,16 +42,11 @@ function App() {
   //     .catch((error) => {
   //       // setError(error.message);
   //     })
-  //     .finally(() => {
-  //       // setAllCeps()
-  //     });
-  //   }
+  //     // .finally(() => {
+  //     //   setAllCeps()
+  //     // });
+  //   },[cep]
   // );
-
-  const handleCep = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const currentCep = e.target.value
-    setCep(currentCep)
-  }
 
   return (
     <div>
@@ -93,7 +69,7 @@ function App() {
               type="text"
               className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
               placeholder="00000-000"
-              onChange={handleCep}
+              onChange={(e) => setAllCeps({ ...allCeps, cep: e.target.value })}
               value={cep}
               required
               maxLength={8}
@@ -102,7 +78,7 @@ function App() {
             <button
               type="button"
               className="-mr-1 flex rounded-md p-2 ml-4 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-              onClick={getCEP}
+              // onClick={getCEP}
             >
               <MagnifyingGlassIcon className="h-6 w-6 text-white" aria-hidden="true" />
             </button>
