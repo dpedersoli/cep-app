@@ -14,14 +14,34 @@ type TCep = {
 }
 
 function App() {
-  const [cep, setCep] = useState('')
-  const [allCeps, setAllCeps] = useState<TCep[]>([{
+  // const [cep, setCep] = useState()
+  const [allCeps, setAllCeps] = useState<TCep>({ //passar esse object para dentro de uma ARRAY e a partir dessa array eu dou o '.map'
     cep: "",
     logradouro: "",
     bairro: "",
     cidade: "",
     uf: ""
-  }])
+  } as TCep)
+
+  const getCEP = (e: any) => {
+    e.preventDefault();
+
+    api
+    .get(allCeps.cep + '/json')
+    .then(response =>{
+      let ceps = []
+      ceps.push(response.data)
+      localStorage.setItem("token", JSON.stringify(ceps)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores
+    })
+    .catch(error =>{
+
+    })
+    .finally(() => {
+      let dandan = localStorage.getItem("token")
+      console.log(dandan)
+    })
+
+  }
 
   // const getCEP = useCallback((e: any) => {
   //   e.preventDefault();
@@ -70,7 +90,7 @@ function App() {
               className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
               placeholder="00000-000"
               onChange={(e) => setAllCeps({ ...allCeps, cep: e.target.value })}
-              value={cep}
+              // value={cep}
               required
               maxLength={8}
             />
@@ -78,7 +98,7 @@ function App() {
             <button
               type="button"
               className="-mr-1 flex rounded-md p-2 ml-4 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-              // onClick={getCEP}
+              onClick={getCEP}
             >
               <MagnifyingGlassIcon className="h-6 w-6 text-white" aria-hidden="true" />
             </button>
@@ -88,7 +108,7 @@ function App() {
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
-        {allCeps.length > 0 &&
+        {/* {allCeps.length > 1 &&
           <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl">
             {allCeps.map((cep, id) => {
               return(
@@ -115,7 +135,7 @@ function App() {
                 </button>
               </div>
           </div>
-        }
+        } */}
       </main>
 
       <footer>
