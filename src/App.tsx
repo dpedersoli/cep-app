@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {api} from './services/api'
 
 import { Footer } from './components/footer'
@@ -14,7 +14,7 @@ type TCep = {
 }
 
 function App() {
-  // const [cep, setCep] = useState()
+  const [cepList, setCepList] = useState([])
   const [allCeps, setAllCeps] = useState<TCep>({ //passar esse object para dentro de uma ARRAY e a partir dessa array eu dou o '.map'
     cep: "",
     logradouro: "",
@@ -31,16 +31,19 @@ function App() {
     .then(response =>{
       let ceps = []
       ceps.push(response.data)
-      localStorage.setItem("token", JSON.stringify(ceps)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores
+      localStorage.setItem("ceps", JSON.stringify(ceps)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores
+      
+      const newCeps = response.data
+      setCepList(newCeps)
     })
     .catch(error =>{
-
+      
     })
     .finally(() => {
-      let dandan = localStorage.getItem("token")
-      console.log(dandan)
+      let teste = localStorage.getItem("ceps")
+      console.log("TESTE" + teste)
+      console.log("CEPLIST" + cepList)
     })
-
   }
 
   // const getCEP = useCallback((e: any) => {
