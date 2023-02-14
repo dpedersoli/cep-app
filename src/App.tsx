@@ -13,6 +13,8 @@ type TCep = {
   uf: string
 }
 
+//still need to improve the useState + conditioning + delete func"
+
 function App() {
   const [inputCep, setInputCep] = useState<TCep>({
     cep: "",
