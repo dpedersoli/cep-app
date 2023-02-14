@@ -14,48 +14,62 @@ type TCep = {
 }
 
 function App() {
-  const [inputCep, setInputCep] = useState<TCep>({
+  const [cepList, setCepList] = useState([])
+  const [allCeps, setAllCeps] = useState<TCep>({ //passar esse object para dentro de uma ARRAY e a partir dessa array eu dou o '.map'
     cep: "",
     logradouro: "",
     bairro: "",
     cidade: "",
     uf: ""
   } as TCep)
-  const [cepList, setCepList] = useState([])
 
   const getCEP = (e: any) => {
     e.preventDefault();
 
     api
-    .get(inputCep.cep + '/json')
-    .then(response => {
-      setInputCep({
-        cep: "",
-        logradouro: "",
-        bairro: "",
-        cidade: "",
-        uf: ""
-      } as TCep)
-
-      // console.log(response.data.cep, response.data.logradouro, response.data.bairro, response.data.cidade, response.data.uf)
-
-      setCepList([...cepList, {
-        cep: response.data.cep,
-        logradouro: response.data.logradouro,
-        bairro: response.data.bairro,
-        cidade: response.data.cidade,
-        uf: response.data.uf
-      }] as any);
-
-      console.log(cepList)
-      localStorage.setItem("ceps", JSON.stringify(cepList)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores      
+    .get(allCeps.cep + '/json')
+    .then(response =>{
+      let ceps = []
+      ceps.push(response.data)
+      localStorage.setItem("ceps", JSON.stringify(ceps)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores
+      
+      const newCeps = response.data
+      setCepList(newCeps)
     })
     .catch(error =>{
-      console.log(error)
+      
     })
     .finally(() => {
+      let teste = localStorage.getItem("ceps")
+      console.log("TESTE" + teste)
+      console.log("CEPLIST" + cepList)
     })
   }
+
+  // const getCEP = useCallback((e: any) => {
+  //   e.preventDefault();
+
+  //   if (cep.toString().length < 8) {
+  //     return (console.log('Insira o CEP completo (8 dígitos)'))
+  //   } else if (isNaN(Number(cep)) || !cep) {
+  //     return (console.log('Insira somente números'))
+  //   }
+
+  //   api.get(cep + '/json')
+  //   .then((response) => {
+  //     setAllCeps(response.data)
+  //     setCep('')
+      
+  //     console.log(allCeps)
+  //     })
+  //     .catch((error) => {
+  //       // setError(error.message);
+  //     })
+  //     // .finally(() => {
+  //     //   setAllCeps()
+  //     // });
+  //   },[cep]
+  // );
 
   return (
     <div>
@@ -78,8 +92,8 @@ function App() {
               type="text"
               className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
               placeholder="00000-000"
-              onChange={(e) => setInputCep({ ...inputCep, cep: e.target.value })}
-              value={inputCep.cep}
+              onChange={(e) => setAllCeps({ ...allCeps, cep: e.target.value })}
+              // value={cep}
               required
               maxLength={8}
             />
@@ -97,9 +111,9 @@ function App() {
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
-        {/* {inputCep.length > 1 &&
+        {/* {allCeps.length > 1 &&
           <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl">
-            {inputCep.map((cep, id) => {
+            {allCeps.map((cep, id) => {
               return(
                 <div className="flex justify-between my-1 bg-purple-400 rounded-xl p-4 w-full" key={id}>
                   <div>
@@ -118,7 +132,7 @@ function App() {
               <div>
                 <button
                 className="bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
-                // onClick={removeinputCep}
+                // onClick={removeAllCeps}
                 >
                   remove all CEPs
                 </button>
