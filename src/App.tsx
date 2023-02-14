@@ -21,7 +21,10 @@ function App() {
     cidade: "",
     uf: ""
   } as TCep)
-  const [cepList, setCepList] = useState([])
+  const [cepList, setCepList] = useState<TCep[]>([])
+
+  // let ls: any = localStorage.getItem("ceps")
+  // setCepList(ls)
 
   const getCEP = (e: any) => {
     e.preventDefault();
@@ -29,6 +32,8 @@ function App() {
     api
     .get(inputCep.cep + '/json')
     .then(response => {
+      setCepList([...cepList, response.data]);
+
       setInputCep({
         cep: "",
         logradouro: "",
@@ -37,23 +42,13 @@ function App() {
         uf: ""
       } as TCep)
 
-      // console.log(response.data.cep, response.data.logradouro, response.data.bairro, response.data.cidade, response.data.uf)
-
-      setCepList([...cepList, {
-        cep: response.data.cep,
-        logradouro: response.data.logradouro,
-        bairro: response.data.bairro,
-        cidade: response.data.cidade,
-        uf: response.data.uf
-      }] as any);
-
-      console.log(cepList)
-      localStorage.setItem("ceps", JSON.stringify(cepList)) //so far so good -> preciso manter os valores anteriores e não sobescrevê-los com um novo -> e posteriormente mostrar todos os valores      
+      localStorage.setItem("ceps", JSON.stringify(cepList))
     })
     .catch(error =>{
       console.log(error)
     })
     .finally(() => {
+      console.log(cepList)
     })
   }
 
@@ -97,9 +92,9 @@ function App() {
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
-        {/* {inputCep.length > 1 &&
+        {cepList.length > 1 &&
           <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl">
-            {inputCep.map((cep, id) => {
+            {cepList.map((cep, id) => {
               return(
                 <div className="flex justify-between my-1 bg-purple-400 rounded-xl p-4 w-full" key={id}>
                   <div>
@@ -124,7 +119,7 @@ function App() {
                 </button>
               </div>
           </div>
-        } */}
+        }
       </main>
 
       <footer>
