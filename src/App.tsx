@@ -13,7 +13,7 @@ type TCep = {
   uf: string
 }
 
-//still need to improve the useState + delete functions
+//still need to improve the useState + check for repeated data + delete functions
 
 function App() {
   const [inputCep, setInputCep] = useState<TCep>({
@@ -27,7 +27,21 @@ function App() {
   const [invalidCepError, setInvalidCepError] = useState(false)
   const [invalidTypeError, setInvalidTypeError] = useState(false)
 
-  var validacep = /^[0-9]{8}$/;
+  const validateCep = /^[0-9]{8}$/;
+
+  ///////////////
+
+  let valueArr = cepList.map((item) => {
+     return item.cep 
+    });
+
+  let isDuplicate = valueArr.some((item, idx) => { 
+      return valueArr.indexOf(item) != idx 
+  });
+  
+  console.log(isDuplicate);
+
+  //////////
 
   const getCEP = (e: any) => {
     e.preventDefault();
@@ -48,7 +62,7 @@ function App() {
     })
     
     .catch(() =>{
-      if(validacep.test(inputCep.cep) === false){
+      if(validateCep.test(inputCep.cep) === false){
         setInvalidTypeError(true)
         setInvalidCepError(false)
       }
@@ -63,7 +77,6 @@ function App() {
         uf: ""
       } as TCep)
     })
-
   }
 
   return (
@@ -115,7 +128,7 @@ function App() {
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
         {cepList.length > 1 &&
-          <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl">
+          <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl my-4">
             {cepList.map((cep, id) => {
               return(
                 <div className="flex justify-between my-1 bg-purple-400 rounded-xl p-4 w-full" key={id}>
