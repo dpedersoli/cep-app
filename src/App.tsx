@@ -13,7 +13,7 @@ type TCep = {
   uf: string
 }
 
-//still need to improve the useState + conditioning + delete func"
+//still need to improve the useState + delete functions
 
 function App() {
   const [inputCep, setInputCep] = useState<TCep>({
@@ -24,9 +24,10 @@ function App() {
     uf: ""
   } as TCep)
   const [cepList, setCepList] = useState<TCep[]>([])
+  const [invalidCepError, setInvalidCepError] = useState(false)
+  const [invalidTypeError, setInvalidTypeError] = useState(false)
 
-  // let ls: any = localStorage.getItem("ceps")
-  // setCepList(ls)
+  var validacep = /^[0-9]{8}$/;
 
   const getCEP = (e: any) => {
     e.preventDefault();
@@ -34,8 +35,26 @@ function App() {
     api
     .get(inputCep.cep + '/json')
     .then(response => {
-      setCepList([...cepList, response.data]);
+      
+      if (response.data.cep == null) {
+        setInvalidCepError(true)
+        setInvalidTypeError(false)
+      } else {
+        setCepList([...cepList, response.data]);
+        setInvalidCepError(false)
+        setInvalidTypeError(false)
+      }
 
+    })
+    
+    .catch(() =>{
+      if(validacep.test(inputCep.cep) === false){
+        setInvalidTypeError(true)
+        setInvalidCepError(false)
+      }
+
+    })
+    .finally(() => {
       setInputCep({
         cep: "",
         logradouro: "",
@@ -43,54 +62,55 @@ function App() {
         cidade: "",
         uf: ""
       } as TCep)
+    })
 
-      localStorage.setItem("ceps", JSON.stringify(cepList))
-    })
-    .catch(error =>{
-      console.log(error)
-    })
-    .finally(() => {
-      console.log(cepList)
-    })
   }
 
   return (
     <div>
       <header className="bg-purple-600">
-      <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center justify-between">
-            <div>
-              <a href="/" className="flex">
-                <span className="flex rounded-lg bg-purple-800 p-2">
-                  <MapPinIcon className="h-6 w-6 text-white" aria-hidden="true" />
-                </span>
-                <p className="ml-3 truncate font-bold text-white text-3xl">
-                  CEP app
-                </p>
-              </a>
+        <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between">
+              <div>
+                <a href="/" className="flex">
+                  <span className="flex rounded-lg bg-purple-800 p-2">
+                    <MapPinIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  </span>
+                  <p className="ml-3 truncate font-bold text-white text-3xl">
+                    CEP app
+                  </p>
+                </a>
+              </div>
+
+            <div className="flex flex-shrink-0 sm:order-3 sm:ml-3">
+                <input
+                  type="text"
+                  className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
+                  placeholder="00000-000"
+                  onChange={(e) => setInputCep({ ...inputCep, cep: e.target.value })}
+                  value={inputCep.cep}
+                  required
+                  maxLength={8}
+                  />
+
+              <button
+                type="button"
+                className="-mr-1 flex rounded-md p-2 ml-4 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
+                onClick={getCEP}
+              >
+                <MagnifyingGlassIcon className="h-6 w-6 text-white" aria-hidden="true" />
+              </button>
             </div>
-
-          <div className="flex flex-shrink-0 sm:order-3 sm:ml-3">
-            <input
-              type="text"
-              className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
-              placeholder="00000-000"
-              onChange={(e) => setInputCep({ ...inputCep, cep: e.target.value })}
-              value={inputCep.cep}
-              required
-              maxLength={8}
-            />
-
-            <button
-              type="button"
-              className="-mr-1 flex rounded-md p-2 ml-4 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-              onClick={getCEP}
-            >
-              <MagnifyingGlassIcon className="h-6 w-6 text-white" aria-hidden="true" />
-            </button>
           </div>
         </div>
-      </div>
+
+        {invalidCepError && 
+          <p className="text-white text-center bg-red-500">Digite um CEP existente</p>
+        }
+        {invalidTypeError && 
+          <p className="text-white text-center bg-red-500">Digite somente números (8 números)</p>
+        }
+        
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
