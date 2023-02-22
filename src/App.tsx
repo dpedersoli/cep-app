@@ -29,17 +29,21 @@ function App() {
 
   const validateCep = /^[0-9]{8}$/;
 
-  ///////////////
+  /////////////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
 
   let valueArr = cepList.map((item) => {
-     return item.cep 
-    });
+    return item.cep 
+   });
 
-  let isDuplicate = valueArr.some((item, idx) => { 
-      return valueArr.indexOf(item) != idx 
-  });
-  
-  console.log(isDuplicate);
+ let isDuplicate = valueArr.some((item, idx) => { 
+   console.log("item: " + item)
+   console.log("idx " + idx)
+   console.log("inputCep " + inputCep.cep)
+     return valueArr.indexOf(inputCep.cep) != idx
+ });
+ 
+ console.log(valueArr)
+ console.log(isDuplicate);
 
   //////////
 
