@@ -32,7 +32,7 @@ function App() {
   /////////////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
 
   let valueArr = cepList.map((item) => {
-    return item.cep 
+    return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
    });
 
  let isDuplicate = valueArr.some((item, idx) => { 
@@ -43,7 +43,7 @@ function App() {
  });
  
  console.log(valueArr)
- console.log(isDuplicate);
+//  console.log(isDuplicate);
 
   //////////
 
