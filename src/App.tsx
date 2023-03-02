@@ -45,7 +45,7 @@ function App() {
  console.log(valueArr)
 //  console.log(isDuplicate);
 
-  //////////
+  /////////
 
   const getCEP = (e: any) => {
     e.preventDefault();
