@@ -83,6 +83,10 @@ function App() {
     })
   }
 
+  const removeAllCeps = () => {
+    setCepList([])
+  }
+
   return (
     <div>
       <header className="bg-purple-600">
@@ -131,7 +135,7 @@ function App() {
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
-        {cepList.length > 1 &&
+        {cepList.length > 0 &&
           <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl my-4">
             {cepList.map((cep, id) => {
               return(
@@ -152,7 +156,7 @@ function App() {
               <div>
                 <button
                 className="bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
-                // onClick={removeinputCep}
+                onClick={removeAllCeps}
                 >
                   remove all CEPs
                 </button>
