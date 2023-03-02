@@ -1,15 +1,18 @@
-import { useState, useCallback, useEffect } from "react";
+// 1 - validar se o CEP já existe
+// 2 - remover 1 item específico
+
+import { useState } from "react";
 import {api} from './services/api'
 
 import { Footer } from './components/footer'
 
-import { MapPinIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { MapPinIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 type TCep = {
   cep: any,
   logradouro: string,
   bairro: string,
-  cidade: string,
+  localidade: string,
   uf: string
 }
 
@@ -20,7 +23,7 @@ function App() {
     cep: "",
     logradouro: "",
     bairro: "",
-    cidade: "",
+    localidade: "",
     uf: ""
   } as TCep)
   const [cepList, setCepList] = useState<TCep[]>([])
@@ -31,24 +34,27 @@ function App() {
 
   /////////////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
 
-  let valueArr = cepList.map((item) => {
-    return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
-   });
 
- let isDuplicate = valueArr.some((item, idx) => { 
-   console.log("item: " + item)
-   console.log("idx " + idx)
-   console.log("inputCep " + inputCep.cep)
-     return valueArr.indexOf(inputCep.cep) != idx
- });
- 
- console.log(valueArr)
-//  console.log(isDuplicate);
+
 
   /////////
 
   const getCEP = (e: any) => {
     e.preventDefault();
+
+    ///////////////
+    let valueArr = cepList.map((item) => {
+      return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
+    });
+  
+    for (let i = 0; i < valueArr.length; i++) {
+      let cepTest = valueArr[i]
+      
+      if(inputCep.cep == cepTest){
+        return console.log('repetiu')
+      }
+    }
+    ///////////////
 
     api
     .get(inputCep.cep + '/json')
@@ -67,24 +73,30 @@ function App() {
     
     .catch(() =>{
       if(validateCep.test(inputCep.cep) === false){
-        setInvalidTypeError(true)
+        setInvalidTypeError(false)
         setInvalidCepError(false)
       }
 
     })
-    .finally(() => {
-      setInputCep({
-        cep: "",
-        logradouro: "",
-        bairro: "",
-        cidade: "",
-        uf: ""
-      } as TCep)
-    })
+    // .finally(() => {
+    //   setInputCep({
+    //     cep: "",
+    //     logradouro: "",
+    //     bairro: "",
+    //     localidade: "",
+    //     uf: ""
+    //   } as TCep)
+    // })
+  }
+
+  const removeCep = () => {
+    console.log("not yet done")
   }
 
   const removeAllCeps = () => {
     setCepList([])
+    setInvalidCepError(false)
+    setInvalidTypeError(false)
   }
 
   return (
@@ -103,7 +115,7 @@ function App() {
                 </a>
               </div>
 
-            <div className="flex flex-shrink-0 sm:order-3 sm:ml-3">
+            <form onSubmit={getCEP} className="flex flex-shrink-0 sm:order-3 sm:ml-3">
                 <input
                   type="text"
                   className="-mr-1 text-center flex rounded-md p-2 hover:bg-purple-500 focus:outline-none focus:bg-purple-500 focus:ring-2 focus:ring-white focus:text-white sm:-mr-2 "
@@ -115,13 +127,12 @@ function App() {
                   />
 
               <button
-                type="button"
+                type="submit"
                 className="-mr-1 flex rounded-md p-2 ml-4 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-                onClick={getCEP}
               >
                 <MagnifyingGlassIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </button>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -142,23 +153,24 @@ function App() {
                 <div className="flex justify-between my-1 bg-purple-400 rounded-xl p-4 w-full" key={id}>
                   <div>
                   <p className="text-white text-3xl font-bold">{cep.cep}</p>
-                  <p className="text-white text-lg">{cep.logradouro} - {cep.bairro}, {cep.cidade} - {cep.uf}</p>
+                  <p className="text-white text-lg">{cep.logradouro} - {cep.bairro}, {cep.localidade} - {cep.uf}</p>
                   </div>
                   <button
-                  className="bg-red-500 text-white h-8 w-8 rounded-lg hover:bg-red-600 active:bg-red-700"
-                  // onClick={removeCep}
+                  className="bg-red-500 text-white h-6 w-5 rounded-md hover:bg-red-600 active:bg-red-700"
+                  onClick={removeCep}
                   >
-                  X  
+                  <TrashIcon className="h-4 w-5 text-white" aria-hidden="true" />  
                   </button>
                 </div>
               )
               })}
               <div>
                 <button
-                className="bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
+                className="flex bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
                 onClick={removeAllCeps}
                 >
                   remove all CEPs
+                  <TrashIcon className="ml-2 h-5 w-5 text-red-600" aria-hidden="true" /> 
                 </button>
               </div>
           </div>
