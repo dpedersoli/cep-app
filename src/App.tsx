@@ -27,8 +27,8 @@ function App() {
     uf: ""
   } as TCep)
   const [cepList, setCepList] = useState<TCep[]>([])
-  const [invalidCepError, setInvalidCepError] = useState(false)
-  const [invalidTypeError, setInvalidTypeError] = useState(false)
+  const [isValidCep, setIsValidCep] = useState(false)
+  const [isCharacterValid, setIsCharacterValid] = useState(false)
 
   const validateCep = /^[0-9]{8}$/;
 
@@ -61,20 +61,20 @@ function App() {
     .then(response => {
       
       if (response.data.cep == null) {
-        setInvalidCepError(true)
-        setInvalidTypeError(false)
+        setIsValidCep(true)
+        setIsCharacterValid(false)
       } else {
         setCepList([...cepList, response.data]);
-        setInvalidCepError(false)
-        setInvalidTypeError(false)
+        setIsValidCep(false)
+        setIsCharacterValid(false)
       }
 
     })
     
     .catch(() =>{
       if(validateCep.test(inputCep.cep) === false){
-        setInvalidTypeError(false)
-        setInvalidCepError(false)
+        setIsCharacterValid(false)
+        setIsValidCep(false)
       }
 
     })
@@ -95,8 +95,8 @@ function App() {
 
   const removeAllCeps = () => {
     setCepList([])
-    setInvalidCepError(false)
-    setInvalidTypeError(false)
+    setIsValidCep(false)
+    setIsCharacterValid(false)
   }
 
   return (
@@ -136,10 +136,10 @@ function App() {
           </div>
         </div>
 
-        {invalidCepError && 
+        {isValidCep && 
           <p className="text-white text-center bg-red-500">Digite um CEP existente</p>
         }
-        {invalidTypeError && 
+        {isCharacterValid && 
           <p className="text-white text-center bg-red-500">Digite somente números (8 números)</p>
         }
         
