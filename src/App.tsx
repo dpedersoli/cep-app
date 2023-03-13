@@ -38,13 +38,13 @@ function App() {
     return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
   });
 
-  // for (let i = 0; i < valueArr.length; i++) {
-  //   let cepTest = valueArr[i]
+  for (let i = 0; i < valueArr.length; i++) {
+    let cepTest = valueArr[i]
     
-  //   if(inputCep.cep == cepTest){
-  //     return console.log('repeated')
-  //   }
-  // }
+    if(inputCep.cep == cepTest){
+      return console.log('repeated')
+    }
+  }
 
 
   /////////
@@ -77,11 +77,7 @@ function App() {
 
     })
     .finally(() => {
-      let valueArray = cepList.map((item) => {
-        return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
-      });
 
-      console.log("valueArr", valueArray)
     })
   }
 
