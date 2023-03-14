@@ -34,51 +34,48 @@ function App() {
 
   /////////////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
 
-  let valueArr = cepList.map((item) => {
-    return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
-  });
-
-  for (let i = 0; i < valueArr.length; i++) {
-    let cepTest = valueArr[i]
-    
-    if(inputCep.cep == cepTest){
-      return console.log('repeated')
+  const isCEPRepeating = () => {
+    let valueArr = cepList.map((item) => {
+      return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
+    });
+  
+    for (let i = 0; i < valueArr.length; i++) {
+      let cepTest = valueArr[i]
+      
+      if(inputCep.cep == cepTest){
+        return console.log('repeated')
+      }
     }
   }
 
 
+
   /////////
 
-  const getCEP = (e: any) => {
+  const getCEP = async (e: any) => {
     e.preventDefault();
 
-    api
-    .get(inputCep.cep + '/json')
-    .then(response => {
-      
-      
-      if (response.data.cep == null) {
-        setIsValidCep(true)
-        setIsCharacterValid(false)
-      } else {
-        setCepList([...cepList, response.data]);
-        setIsValidCep(false)
-        setIsCharacterValid(false)
-        console.log("cepList:", cepList)
+      try{
+        const response = await api
+        .get(inputCep.cep + '/json')
+
+        if (response.data.cep == null) {
+          setIsValidCep(true)
+          setIsCharacterValid(false)
+        } else {
+          setCepList([...cepList, response.data]);
+          setIsValidCep(false)
+          setIsCharacterValid(false)
+          console.log("cepList:", cepList)
+        }
+
+      } catch(e){
+        if(isCharacterAccepted.test(inputCep.cep) === false){
+          setIsCharacterValid(false)
+          setIsValidCep(false)
+        }
+
       }
-
-    })
-    
-    .catch(() =>{
-      if(isCharacterAccepted.test(inputCep.cep) === false){
-        setIsCharacterValid(false)
-        setIsValidCep(false)
-      }
-
-    })
-    .finally(() => {
-
-    })
   }
 
   const removeCep = () => {
