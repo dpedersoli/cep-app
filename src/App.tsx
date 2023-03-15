@@ -24,28 +24,14 @@ function App() {
   const [cepList, setCepList] = useState<TCep[]>([])
   const [isValidCep, setIsValidCep] = useState(false)
   const [isCharacterValid, setIsCharacterValid] = useState(false)
+  const [isCepDuplicated, setIsCepDuplicated] = useState(false)
 
   const isCharacterAccepted = /^[0-9]{8}$/;
 
   //////AREA DE TESTES///////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
-    // 1 - validar se o CEP já existe
-    // 2 - remover 1 item específico
+    // 1 - remover 1 item específico
 
-  let valueArr = cepList.map((item) => {
-    return item.cep //aqui eu já tenho o retorno da array com os itens 'cep' dentro de 'cepList' -> daqui eu pego o valor de cada item dentro da array e comparo com o 'input.value'
-  });
 
-  for (let i = 0; i < valueArr.length; i++) {
-    // let cepTest = valueArr[i]
-
-    console.log("forLoop", valueArr[i]) //aqui retorna uma string com todos os valores dentro de 'cepList' separadamente -> agora então em cada loop que der, vou checar o valor do item atual do loop com o valor atual de "inputCep" p/ ver se existe duplicata
-    
-    // if(inputCep.cep == cepTest){
-    //   return console.log('repeated')
-    // }
-  }
-
-  console.log("valueArr", valueArr)
 
   /////AREA DE TESTES/////////
 
@@ -54,25 +40,51 @@ function App() {
 
       try{
 
-        const response = await api
-        .get(inputCep.cep + '/json')
+        // const isCEPRepeating = checkIfCEPExists(inputCep.cep)
 
-        if (response.data.cep == null) {
-          setIsValidCep(true)
-          setIsCharacterValid(false)
-        } else if (response.data.cep == cepList) {
+        if(!checkIfCEPExists(inputCep.cep)){ //se a função retornar 'false' (que é = "cep não repetido"), então o CEP é adicionado na lista (se estiver nas condições)
+          const response = await api
+          .get(inputCep.cep + '/json')
 
-        } else {
-          setCepList([...cepList, response.data]);
+          if (response.data.cep == null) {
+            setIsValidCep(true)
+            setIsCharacterValid(false)
+            setIsCepDuplicated(false)
+          } else {
+            setCepList([...cepList, response.data]);
+            setIsValidCep(false)
+            setIsCharacterValid(false)
+            setIsCepDuplicated(false)
+          }
+        } else { //se a função retornar 'true' (que é = "cep REPETIDO"), então o CEP não será adicionado na lista
+          setIsCepDuplicated(true)
           setIsValidCep(false)
           setIsCharacterValid(false)
         }
-      } catch(e){
+
+      } catch(e) {
         if(isCharacterAccepted.test(inputCep.cep) === false){
           setIsCharacterValid(true)
           setIsValidCep(false)
+          setIsCepDuplicated(false)
         }
       }
+  }
+
+  const valueArr = cepList.map((item) => {
+    return item.cep.replace('-', '')
+  });
+
+  const checkIfCEPExists = (curentCepInput: string) => {
+    for (let i = 0; i < valueArr.length; i++) {
+  
+      console.log("forLoop", valueArr[i])
+      
+      if(curentCepInput == valueArr[i]){
+        return true;
+      }
+
+    }
   }
 
   const removeCep = () => {
@@ -128,9 +140,9 @@ function App() {
         {isCharacterValid && 
           <p className="text-white text-center bg-red-500">Digite somente números (8 números)</p>
         }
-        {/* {isCharacterValid && 
-          <p className="text-white text-center bg-red-500">Esse CEP já está na lista. Digite um diferente</p>
-        } */}
+        {isCepDuplicated && 
+          <p className="text-white text-center bg-red-500">Esse CEP já está na lista. Digite um CEP diferente</p>
+        }
         
       </header>
 
