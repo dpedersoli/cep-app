@@ -78,8 +78,6 @@ function App() {
   const checkIfCEPExists = (curentCepInput: string) => {
     for (let i = 0; i < valueArr.length; i++) {
   
-      console.log("forLoop", valueArr[i])
-      
       if(curentCepInput == valueArr[i]){
         return true;
       }
@@ -87,8 +85,13 @@ function App() {
     }
   }
 
-  const removeCep = () => {
-    console.log("not yet done")
+  const removeCep = (cepId: any) => {
+    // console.log("cepId:", cepId)
+    const removedCEP = cepList.splice(cepId, 1);
+    // console.log("removedCEP:" ,removedCEP)
+    setCepList(cepList) //aqui eu tenho que passar a nova lista atualizada
+
+    // console.log("cepList:", cepList)
   }
 
   const removeAllCeps = () => {
@@ -158,13 +161,14 @@ function App() {
                   </div>
                   <button
                   className="bg-red-500 text-white h-6 w-5 rounded-md hover:bg-red-600 active:bg-red-700"
-                  onClick={removeCep}
+                  onClick={() => {removeCep(id)}}
                   >
                   <TrashIcon className="h-4 w-5 text-white" aria-hidden="true" />  
                   </button>
                 </div>
               )
-              })}
+              })
+              }
               <div>
                 <button
                 className="flex bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
