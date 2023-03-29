@@ -6,43 +6,35 @@ import { Footer } from './components/footer'
 import { MapPinIcon, MagnifyingGlassIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 type TCep = {
-  cep: any,
-  logradouro: string,
-  bairro: string,
-  localidade: string,
-  uf: string
+cep: any,
+logradouro: string,
+bairro: string,
+localidade: string,
+uf: string
 }
 
 function App() {
-  const [inputCep, setInputCep] = useState<TCep>({
-    cep: "",
-    logradouro: "",
-    bairro: "",
-    localidade: "",
-    uf: ""
-  } as TCep)
-  const [cepList, setCepList] = useState<TCep[]>([])
-  const [isValidCep, setIsValidCep] = useState(false)
-  const [isCharacterValid, setIsCharacterValid] = useState(false)
-  const [isCepDuplicated, setIsCepDuplicated] = useState(false)
+const [inputCep, setInputCep] = useState<TCep>({
+cep: "",
+logradouro: "",
+bairro: "",
+localidade: "",
+uf: "",
+id: ""
+} as TCep)
+const [cepList, setCepList] = useState<TCep[]>([])
+const [isValidCep, setIsValidCep] = useState(false)
+const [isCharacterValid, setIsCharacterValid] = useState(false)
+const [isCepDuplicated, setIsCepDuplicated] = useState(false)
 
-  const isCharacterAccepted = /^[0-9]{8}$/;
+const isCharacterAccepted = /^[0-9]{8}$/;
 
-  //////AREA DE TESTES///////// Pegar o valor de "reponse.data.cep" -> fazer o loop dentro da array e fazer um loop dentro de cada object e verificar o "item.cep"
-    // 1 - remover 1 item específico
-
-
-
-  /////AREA DE TESTES/////////
-
-  const getCEP = async (e: any) => {
-    e.preventDefault();
+const getCEP = async (e: any) => {
+e.preventDefault();
 
       try{
 
-        // const isCEPRepeating = checkIfCEPExists(inputCep.cep)
-
-        if(!checkIfCEPExists(inputCep.cep)){ //se a função retornar 'false' (que é = "cep não repetido"), então o CEP é adicionado na lista (se estiver nas condições)
+        if(!checkIfCEPExists(inputCep.cep)){
           const response = await api
           .get(inputCep.cep + '/json')
 
@@ -56,7 +48,7 @@ function App() {
             setIsCharacterValid(false)
             setIsCepDuplicated(false)
           }
-        } else { //se a função retornar 'true' (que é = "cep REPETIDO"), então o CEP não será adicionado na lista
+        } else { 
           setIsCepDuplicated(true)
           setIsValidCep(false)
           setIsCharacterValid(false)
@@ -69,52 +61,51 @@ function App() {
           setIsCepDuplicated(false)
         }
       }
-  }
 
-  const valueArr = cepList.map((item) => {
-    return item.cep.replace('-', '')
-  });
+}
 
-  const checkIfCEPExists = (curentCepInput: string) => {
-    for (let i = 0; i < valueArr.length; i++) {
-  
+const valueArr = cepList.map((item) => {
+return item.cep.replace('-', '')
+});
+
+const checkIfCEPExists = (curentCepInput: string) => {
+for (let i = 0; i < valueArr.length; i++) {
+
       if(curentCepInput == valueArr[i]){
         return true;
       }
 
     }
-  }
 
-  const removeCep = (cepId: any) => {
-    // console.log("cepId:", cepId)
-    const removedCEP = cepList.splice(cepId, 1);
-    // console.log("removedCEP:" ,removedCEP)
-    setCepList(cepList) //aqui eu tenho que passar a nova lista atualizada
+}
 
-    // console.log("cepList:", cepList)
-  }
+const removeCep = (cepId: any) => {
+const cepListCopy = cepList
+const result = cepListCopy.filter((cep) => cep.cep != cepId.cep )
+setCepList(result)
+}
 
-  const removeAllCeps = () => {
-    setCepList([])
-    setIsValidCep(false)
-    setIsCharacterValid(false)
-  }
+const removeAllCeps = () => {
+setCepList([])
+setIsValidCep(false)
+setIsCharacterValid(false)
+}
 
-  return (
-    <div>
-      <header className="bg-purple-600">
-        <div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between">
-              <div>
-                <a href="/" className="flex">
-                  <span className="flex rounded-lg bg-purple-800 p-2">
-                    <MapPinIcon className="h-6 w-6 text-white" aria-hidden="true" />
-                  </span>
-                  <p className="ml-3 truncate font-bold text-white text-3xl">
-                    CEP app
-                  </p>
-                </a>
-              </div>
+return (
+<div>
+<header className="bg-purple-600">
+<div className="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
+<div className="flex flex-wrap items-center justify-between">
+<div>
+<a href="/" className="flex">
+<span className="flex rounded-lg bg-purple-800 p-2">
+<MapPinIcon className="h-6 w-6 text-white" aria-hidden="true" />
+</span>
+<p className="ml-3 truncate font-bold text-white text-3xl">
+CEP app
+</p>
+</a>
+</div>
 
             <form onSubmit={getCEP} className="flex flex-shrink-0 sm:order-3 sm:ml-3">
                 <input
@@ -137,16 +128,16 @@ function App() {
           </div>
         </div>
 
-        {isValidCep && 
+        {isValidCep &&
           <p className="text-white text-center bg-red-500">Digite um CEP existente</p>
         }
-        {isCharacterValid && 
+        {isCharacterValid &&
           <p className="text-white text-center bg-red-500">Digite somente números (8 números)</p>
         }
-        {isCepDuplicated && 
+        {isCepDuplicated &&
           <p className="text-white text-center bg-red-500">Esse CEP já está na lista. Digite um CEP diferente</p>
         }
-        
+
       </header>
 
       <main className="flex justify-center items-center content-center min-h-[81vh] h-fit">
@@ -161,9 +152,9 @@ function App() {
                   </div>
                   <button
                   className="bg-red-500 text-white h-6 w-5 rounded-md hover:bg-red-600 active:bg-red-700"
-                  onClick={() => {removeCep(id)}}
+                  onClick={() => {removeCep(cep)}}
                   >
-                  <TrashIcon className="h-4 w-5 text-white" aria-hidden="true" />  
+                  <TrashIcon className="h-4 w-5 text-white" aria-hidden="true" />
                   </button>
                 </div>
               )
@@ -175,7 +166,7 @@ function App() {
                 onClick={removeAllCeps}
                 >
                   remove all CEPs
-                  <TrashIcon className="ml-2 h-5 w-5 text-red-600" aria-hidden="true" /> 
+                  <TrashIcon className="ml-2 h-5 w-5 text-red-600" aria-hidden="true" />
                 </button>
               </div>
           </div>
@@ -186,7 +177,8 @@ function App() {
         <Footer/>
       </footer>
     </div>
-  )
+
+)
 }
 
 export default App
