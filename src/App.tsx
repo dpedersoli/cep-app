@@ -143,7 +143,7 @@ function App() {
 
       </header>
 
-      <main className="main flex justify-center items-center content-center min-h-[81vh] h-fit">
+      <main className="main flex justify-center items-center content-center min-h-[86vh] h-fit">
         {cepList.length > 0 &&
           <div className="flex flex-col items-center justify-between bg-gray-200 min-w-[90vw] w-fit h-fit h-min-[50vh] p-4 rounded-xl my-4">
             {cepList.map((cep, id) => {
