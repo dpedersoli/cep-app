@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media screen and (max-width: 541px){
+  .main{
+    margin: 0 10px;
+  }
+}
+
+@media screen and (max-width: 415px){
+  .logo{
+    margin-bottom: 0.5rem;
+  }
+
+  .header-query{
+    flex-direction: column;
+  }
+}
