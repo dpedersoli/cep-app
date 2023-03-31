@@ -92,6 +92,7 @@ function App() {
     setCepList([])
     setIsValidCep(false)
     setIsCharacterValid(false)
+    setIsCepDuplicated(false)
   }
 
   return (
