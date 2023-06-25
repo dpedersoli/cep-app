@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from './services/api'
 
 import { Footer } from './components/Footer'
@@ -16,7 +16,7 @@ type TCep = {
   uf: string
 }
 
-function App() {
+export function App() {
   const [inputCep, setInputCep] = useState<TCep>({
     cep: "",
     logradouro: "",
@@ -31,6 +31,21 @@ function App() {
   const [isCepDuplicated, setIsCepDuplicated] = useState(false)
 
   const isCharacterAccepted = /^[0-9]{8}$/;
+
+  const localStorageCepList = JSON.stringify(cepList)
+  const storageCepList = localStorage.getItem('@cep-app:cep-list-1.0.0')
+
+  useEffect(() => {
+    if(cepList.length >= 0){
+      localStorage.setItem('@cep-app:cep-list-1.0.0', localStorageCepList)
+    } 
+  },[cepList])
+  
+  useEffect(() => {
+    if(storageCepList){
+      setCepList(JSON.parse(storageCepList))
+    }
+  },[])
 
   const getCEP = async (e: any) => {
     e.preventDefault();
@@ -184,5 +199,3 @@ function App() {
 
   )
 }
-
-export default App
