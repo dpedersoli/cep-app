@@ -169,7 +169,7 @@ function App() {
                 className="flex bg-white font-bold px-4 py-1 rounded-lg mt-3 hover:bg-gray-50 active:bg-purple-600 focus:ring-1"
                 onClick={removeAllCeps}
               >
-                remove all CEPs
+                exclua todos os CEPs
                 <TrashIcon className="ml-2 h-5 w-5 text-red-600" aria-hidden="true" />
               </button>
             </div>
